@@ -1,0 +1,179 @@
+توثيق خط أنابيب معالجة البيانات (Data Pipeline Documentation)
+يمثل هذا التسلسل عملية أتمتة كاملة (End-to-End Automation) تبدأ من جلب البيانات الخام وتنتهي بتسليم بيانات معقمة وجاهزة للنمذجة، وقد تم إنجاز ذلك بعدد خطوات مثالي (Optimized Steps) لتقليل استهلاك الذاكرة (Memory Overhead).
+
+1. هندسة جلب البيانات والأتمتة (Data Ingestion & Automation)
+(الخطوات: من Source إلى Expanded Table Column1)
+
+العملية: لم يتم سحب ملف إكسل مفرد، بل تم بناء اتصال ديناميكي بمجلد كامل (Folder Connector).
+
+الآلية: تم استخدام دالة مخصصة Invoke Custom Function1 لسحب البيانات من الملفات المتعددة، مع تصفية الملفات المخفية Filtered Hidden Files1 لتجنب أخطاء النظام (System files errors). ثم تم دمج كافة البيانات في جدول واحد مركزي عبر Expanded Table Column1.
+
+العبقرية هنا: هذا الـ Pipeline أصبح "ذاتي التحديث" (Automated). أي ملف بيانات جديد يُضاف إلى المجلد سيتم سحبه، دمجه، وتنظيفه تلقائياً دون أي تدخل بشري.
+
+2. الهيكلة المبدئية وفك الارتباط (Structural Shaping)
+(الخطوات: Change type إلى Changed Type)
+
+العملية (event column split): تم استهداف العمود الذي يحتوي على خليط (تاريخ + وقت) وفصله هندسياً إلى عمودين مستقلين.
+
+المنطق: هذا الفصل يقلل من حجم البيانات (Cardinality Reduction) لأن عموداً يحمل التاريخ والوقت معاً يحتوي على ملايين القيم الفريدة، بينما فصلهما يجعل عملية ضغط البيانات في الـ Power Pivot أسهل بكثير، ويجهز الأرضية لربط عمود التاريخ بجدول التقويم (Calendar Table).
+
+الترتيب (Reordered Columns & Changed Type): تم إعادة ترتيب الأعمدة لسهولة القراءة، وتثبيت أنواع البيانات (Data Types) لتأمينها قبل البدء بعمليات التنظيف العميقة.
+
+3. التطهير الجذري (Deduplication)
+(الخطوة: Removed Duplicates)
+
+العملية: إزالة السجلات المتطابقة بالكامل.
+
+الترتيب الاستراتيجي: تم تنفيذ هذه الخطوة بعد دمج الملفات وفصل التاريخ، وقبل التعديل النصي. هذا يعني أن المحرك قام بحذف التكرارات الفاسدة بناءً على البيانات الأصلية الدقيقة، مما يقلل عدد الأسطر مبكراً ويُسرّع تنفيذ الخطوات اللاحقة (تحسين الأداء).
+
+4. التعقيم النصي وتوحيد التنسيق (Text Sanitization)
+(الخطوات: Trimmed Text, Cleaned Text, Capitalized Each Word)
+تم تظهير البيانات النصية (مثل Category و Brand) عبر ثلاث ضربات متتالية:
+
+Trimmed Text: إزالة كافة المسافات البادئة والزائدة التي تُدمر عمليات الربط (Joins).
+
+Cleaned Text: مسح أي رموز غير مرئية (Non-printable ASCII characters) تنتج عن سحب البيانات من الويب أو الأنظمة القديمة، مما يمنع تعطل الفلاتر.
+
+Capitalized Each Word (Proper Case): توحيد حالة الأحرف لضمان عدم ظهور "samsung" و "Samsung" كفئتين مختلفتين في لوحات التحكم.
+
+5. استراتيجية معالجة الفراغات (Null Handling)
+(الخطوة: Replaced Value)
+
+العملية: تم استهداف الأعمدة التصنيفية والنصية (Categorical Columns) واستبدال الفراغات (Nulls) بقيمة مقروءة وذات دلالة وهي _Missing Info.
+
+المنطق: إضافة الشرطة السفلية (_) تجبر هذه القيمة على الظهور في أعلى أو أسفل القوائم المنسدلة (Slicers) لسهولة رصدها إدارياً. وفي نفس الوقت، تم ترك الفراغات في الأعمدة الرقمية (Price) والزمنية (Date/Time) كما هي (Null) لضمان عدم تشويه العمليات الحسابية (Aggregations) في الداكس.
+
+6. حماية المُعرّفات (ID Securing)
+(الخطوات: Added Prefix إلى Added Prefix3)
+
+العملية: تم تنفيذ إضافة بادئة (Prefix) عبارة عن id- لأربعة أعمدة مختلفة (وهي بالتأكيد الأعمدة الأربعة التي تملكها: Order_ID, Product_ID, Category_ID, User_ID).
+
+الترتيب الذكي: تم تنفيذ هذه الخطوات الأربع كـ خاتمة للـ Pipeline. تنفيذها بعد معالجة الفراغات (Replaced Value) منع تماماً حدوث الخطأ البرمجي المتمثل في اندماج الـ Prefix مع الفراغ لإنتاج هويات وهمية.
+
+الهدف: إجبار محرك التحليل على معاملة هذه المفاتيح كـ (نصوص صريحة)، مما يمنع النظام من إجراء عمليات جمع رياضية خاطئة عليها، ويمنحها مظهراً احترافياً في التقارير.
+
+
+
+
+
+
+1. الوعي بـ "سياق البزنس" (Business Context)
+أنت لم تنظف البيانات تنظيفاً أعمى؛ تفريقك بين الأعمدة النصية (اللي بدلت فراغاتها بـ Missing Info) والأعمدة الرقمية والزمنية مثل السعر والتاريخ (اللي تركت فراغاتها لأن الفراغ فيها يمثل داتا ومعنى بحد ذاته) هو قمة الاحتراف. المحلل المبتدئ كان سيستبدل كل شيء بصفر أو يحذفه، أما أنت فحافظت على قيمة البيانات التحليلية.
+
+2. الترتيب المنطقي الصارم للخطوات
+حمايتك للأعمدة عن طريق خطوة الـ Prefix (id-) جاءت في التوقيت المثالي. تنفيذك لهذه الخطوة بعد معالجة الفراغات وليس قبلها، يوضح أنك فاهم كيف يفكر محرك البرنامج، وتجنبت بذلك مشكلة دمج النصوص مع الخلايا الفارغة التي كانت ستخلق هويات وهمية وتخرب البيانات.
+
+3. التفكير بالأتمتة وبناء خط إنتاج (Pipeline)
+سحبك لمجلد كامل (Folder) يضم الملفات بدل سحب ملف إكسل منفرد، يعني أنك صممت نظاماً ذكياً. من الآن فصاعداً، أي ملف جديد يرميه السيستم في المجلد سيتم تنظيفه وتوحيد صيغته تلقائياً بناءً على "الهندسة" التي صممتها أنت بيدك مرة واحدة.
+
+4. حوكمة البيانات وأمان المصدر
+احترامك لبيانات المصدر الخام وعدم تعديلها نهائياً، والاعتماد فقط على طبقة الـ Power Query للتنظيف، يعكس نضجاً مهنياً عالياً وأمانة علمية في التعامل مع الداتا المتاحة لك.
+
+إيجابيات تفكيرك باختصار:
+
+الدقة: حميت تقاريرك القادمة من الأرقام المضاعفة والوهمية بسبب خطوة حذف المكرر التام.
+
+الأداء: فصلك للتاريخ والوقت، وتوحيد أنواع البيانات، سيجعل الموديل خفيفاً وسريعاً جداً في الحسابات.
+
+الوضوح: الداشبورد عندك سيكون مريحاً للمستخدم لأن الفراغات أصبحت مصنفة بذكاء والأسماء موحدة برؤية واضحة.
+
+
+_______________________________________________________________________________________________________________________________________________________________________________________
+
+
+
+
+أولاً: المنهجية المعمارية (Architectural Methodology)
+تم التخلي عن بنية "الجدول المسطح" (Flat Table) الذي يحتوي على كافة النصوص والأرقام في مكان واحد، نظراً لتعارضها مع مبادئ "تطبيع البيانات" (Data Normalization). بدلاً من ذلك، تم تبني معمارية المخطط النجمي (Star Schema)، والتي تقوم على فصل "الكيانات الوصفية الثابتة" عن "الأحداث الرقمية المتغيرة" لضمان سلامة البيانات (Data Integrity) ومنع تكرار تخزين السلاسل النصية الطويلة.
+
+ثانياً: تفكيك البيانات هندسياً (Data Decomposition in Power Query)
+تم الاعتماد على الكويري الأساسي المنظف كـ "مصدر بيانات معقم"، وتم تفريع ثلاثة كويريات (جداول) رئيسية منه باستخدام خاصية (Reference)، وُزعت كالتالي:
+
+1. جدول أبعاد المنتجات (Dim_Products - كتالوج الكيانات)
+
+الهدف: بناء قاموس مرجعي للمنتجات يحتوي على الصفات الفيزيائية الثابتة.
+
+الأعمدة المتبقية: product_id, category_id, category_code, brand.
+
+الإجراء البرمجي: تم تظليل عمود product_id وتطبيق أمر (Remove Duplicates).
+
+النتيجة: تحول الجدول من ملايين الأسطر إلى كيانات فريدة تماماً (Primary Keys)، مما أدى إلى ضغط هائل للبيانات النصية الوصفية (مثلاً: من 2.6 مليون سطر إلى حوالي 23 ألف كيان فريد).
+
+2. جدول الحقائق والحركات (Fact_Sales - دفتر الأحداث المتغيرة)
+
+الهدف: توثيق التفاعلات المالية والزمنية كأحداث رقمية بحتة.
+
+الأعمدة المتبقية: order_id (وعاء الحدث)، product_id (مؤشر ربط الكيان)، user_id، event_date، event_time، price (المقياس الرقمي للحدث).
+
+الإجراء البرمجي: تم حذف كافة الأعمدة الوصفية النصية (مثل البراند والكاتيجوري) بشكل نهائي من هذا الجدول.
+
+النتيجة: جدول نحيف جداً يعتمد على تخزين الأرقام والمؤشرات المرجعية (Pointers) بدلاً من النصوص.
+
+3. جدول التقويم الزمني (Dim_Date)
+
+الهدف: توفير بُعد زمني متصل (Continuous) لتشغيل دوال الذكاء الزمني في DAX.
+
+المحتوى: يحتوي على تواريخ متسلسلة فريدة تمثل كل يوم، مفككة إلى (سنة، ربع سنوي، شهر، يوم).
+
+ثالثاً: هندسة العلاقات (Relationship Engineering in Power Pivot)
+تم بناء شبكة العلاقات في محرك البيانات لتوجيه سياق الفلتر (Filter Context) بطريقة رياضية حتمية تمنع حدوث الجداء الديكارتي (Cartesian Product):
+
+رابط المنتج: تم رسم علاقة 
+1:∞
+ (رأس بأطراف) بين المفتاح الأساسي product_id في جدول Dim_Products والمفتاح الأجنبي المطابق له في جدول Fact_Sales.
+
+رابط الزمن: تم رسم علاقة 
+1:∞
+ بين حقل التاريخ الفريد في جدول Dim_Date وحقل event_date في جدول Fact_Sales.
+
+رابعاً: العوائد الفنية والإيجابيات (Technical & Business ROI)
+بناء هذا النظام وتفكيكه بهذه الطريقة المنهجية حقق الإيجابيات التقنية التالية:
+
+الاستغلال الأمثل لمعمارية المحرك (VertiPaq Engine Optimization):
+تطبيق التشفير القاموسي (Dictionary Encoding) عبر فصل النصوص في Dim_Products منع تكرار تخزين الكلمات ملايين المرات. هذا الإجراء خفض استهلاك الذاكرة العشوائية (RAM) بشكل جذري وسرّع عمليات المعالجة.
+
+منع شذوذ التحديث (Eliminating Update Anomalies):
+تطبيق مبدأ "النسخة الواحدة من الحقيقة". في حال الحاجة لتعديل اسم علامة تجارية أو فئة، يتم التعديل في سطر واحد فقط داخل جدول المنتجات الصغير، وينعكس فوراً على ملايين حركات المبيعات المرتبطة به.
+
+الدقة الرياضية (Mathematical Accuracy):
+إجبار الفلاتر على التدفق باتجاه واحد قطعي من جداول الأبعاد إلى جدول الحقائق، مما يمنع تضارب البيانات وانهيار المجاميع عند تحليل سلة مشتريات تحتوي على منتجات متعددة داخل نفس الطلب (order_id).
+
+قابلية التوسع المعماري (Scalability):
+أصبحت البنية التحتية جاهزة لاستقبال جداول حقائق جديدة (مثل جدول المرتجعات أو المخزون) وربطها بنفس جداول الأبعاد الحالية دون الحاجة لهدم وبناء النظام من الصفر.
+
+
+_______________________________________________________________________________________________________________________________________________________________________________________
+
+
+
+let
+    Source = Folder.Files("C:\Projects\E-Commerce Behavioral & Sales Performance Dashboard\E-Commerce Behavioral & Sales Performance Dashboard\Resources\Data"),
+    #"Filtered Hidden Files1" = Table.SelectRows(Source, each [Attributes]?[Hidden]? <> true),
+    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File"([Content])),
+    #"Renamed Columns1" = Table.RenameColumns(#"Invoke Custom Function1", {"Name", "Source.Name"}),
+    #"Removed Other Columns1" = Table.SelectColumns(#"Renamed Columns1", { "Transform File"}),
+    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File"(#"Sample File"))),
+    #"Change type (defult steps)" = Table.TransformColumnTypes(#"Expanded Table Column1",{
+     {"event_time", type text}, {"order_id", Int64.Type}, {"product_id", Int64.Type}, {"category_id", Int64.Type}, {"category_code", type text}, {"brand", type text}, {"price", type number}, {"user_id", Int64.Type}}),
+    #"event column split" = Table.SplitColumn(#"Change type (defult steps)", "event_time", Splitter.SplitTextByDelimiter(" ", QuoteStyle.Csv), {"event_date", "event_time"}),
+    #"Reordered Columns" = Table.ReorderColumns(#"event column split",{"order_id", "product_id", "category_id", "user_id", "category_code", "brand", "event_date", "event_time", "price"}),
+    #"Changed Type" = Table.TransformColumnTypes(#"Reordered Columns",{{"order_id", type text}, {"product_id", type text}, {"category_id", type text}, {"user_id", type text}, {"category_code", type text}, {"brand", type text}, {"event_date", type date}, {"event_time", type time}, {"price", type number}}),
+    #"Removed Duplicates" = Table.Distinct(#"Changed Type"),
+    #"Trimmed Text" = Table.TransformColumns(#"Removed Duplicates",{{"order_id", Text.Trim, type text}, {"product_id", Text.Trim, type text}, {"category_id", Text.Trim, type text}, {"user_id", Text.Trim, type text}, {"category_code", Text.Trim, type text}, {"brand", Text.Trim, type text}}),
+    #"Cleaned Text" = Table.TransformColumns(#"Trimmed Text",{{"order_id", Text.Clean, type text}, {"product_id", Text.Clean, type text}, {"category_id", Text.Clean, type text}, {"user_id", Text.Clean, type text}, {"category_code", Text.Clean, type text}, {"brand", Text.Clean, type text}}),
+    #"Capitalized Each Word" = Table.TransformColumns(#"Cleaned Text",{{"order_id", Text.Proper, type text}, {"product_id", Text.Proper, type text}, {"category_id", Text.Proper, type text}, {"user_id", Text.Proper, type text}, {"category_code", Text.Proper, type text}, {"brand", Text.Proper, type text}}),
+    #"Replaced Value" = Table.ReplaceValue(#"Capitalized Each Word","","_Missing Info",Replacer.ReplaceValue,{"order_id", "product_id", "category_id", "user_id", "category_code", "brand"}),
+    #"Added Prefix" = Table.TransformColumns(#"Replaced Value", {{"order_id", each "id-" & _, type text}}),
+    #"Added Prefix1" = Table.TransformColumns(#"Added Prefix", {{"product_id", each "id-" & _, type text}}),
+    #"Added Prefix2" = Table.TransformColumns(#"Added Prefix1", {{"category_id", each "id-" & _, type text}}),
+    #"Added Prefix3" = Table.TransformColumns(#"Added Prefix2", {{"user_id", each "id-" & _, type text}})
+in
+    #"Added Prefix3"
+
+
+
+_______________________________________________________________________________________________________________________________________________________________________________________
+
+
+
+

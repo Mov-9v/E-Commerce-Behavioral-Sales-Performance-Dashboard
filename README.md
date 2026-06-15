@@ -227,6 +227,7 @@ Focuses on inventory distribution, price ranges, and which products actually mov
 Time-based patterns: when do people buy, which hours are busiest, and how revenue shifts across the week and year.
 
 **KPI Cards:**
+<img width="898" height="139" alt="Temporal Analytics cards" src="https://github.com/user-attachments/assets/5eef5e5b-78c3-4765-8bed-0a8d9f68a055" />
 
 | Metric | Value |
 |--------|-------|
@@ -240,19 +241,22 @@ Time-based patterns: when do people buy, which hours are busiest, and how revenu
 
 Revenue concentrates between 08:00–13:00, peaking at 10:00–11:00, especially on Fridays and Saturdays. Late night (20:00–04:00) is consistently the lowest across all days.
 
-![Peak Hours Heat Map](Resources/HeatMap.png)
+<img width="914" height="742" alt="HeatMap" src="https://github.com/user-attachments/assets/0f358484-5eef-4d44-b238-87a7ebe117bd" />
+
 
 **Sales by Day of Week**
 
 Thursday leads (~$51.6M), Wednesday is the lowest (~$44.1M).
 
-![Sales by Day of Week](Resources/Sales%20by%20week.png)
+<img width="960" height="402" alt="Sales by week" src="https://github.com/user-attachments/assets/f69e5114-75b2-438b-9070-932550012ac6" />
+
 
 **Monthly Revenue + MoM Growth (Combo Chart)**
 
 August is the highest month (~$53M). May shows the sharpest growth acceleration.
 
-![Monthly Revenue Combo Chart](Resources/Combo%20chart.png)
+<img width="969" height="359" alt="Combo chart" src="https://github.com/user-attachments/assets/380aec55-ee0d-46f5-832c-a6b2c249ff42" />
+
 
 ---
 

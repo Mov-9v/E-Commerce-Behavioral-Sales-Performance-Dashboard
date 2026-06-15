@@ -180,6 +180,54 @@ This section tracks unique user metrics and transaction habits to understand cus
 
 #### Interactivity
 Controlled by the Month and Category slicers to monitor changes in loyalty habits across different periods and product types.
+---------------
+### Hub 3: Product Intelligence
+
+This section analyzes inventory performance, product distribution, and the relationship between pricing and sales volume.
+<img width="1907" height="897" alt="Product Intelligence" src="https://github.com/user-attachments/assets/8583a33c-80a3-4007-81a7-22d7cc627a20" />
+
+#### Core KPI Cards
+* **Top Category:** The highest-performing category by order volume.
+* **Top Brand:** The brand driving the most transaction volume.
+* **Average Item Price:** The mean price point of products sold across the platform.
+<img width="1001" height="150" alt="Product Intelligence cards" src="https://github.com/user-attachments/assets/6dd0d7bf-188b-4375-b837-41c8d2ee1e5c" />
+
+
+#### Visualizations
+* **Price vs. Volume Correlation (Scatter Plot):** Maps individual product prices against total quantities sold. This chart highlights price elasticity and shows the volume density of items at different price tiers.
+* <img width="649" height="417" alt="Price X Volume plotchart" src="https://github.com/user-attachments/assets/9c57bd23-9e75-4ca5-b7f7-45610d4823b3" />
+
+
+* **Top 50 Categories (Treemap):** Displays the largest 50 categories based on item count, providing a visual breakdown of product assortment density.<img width="1009" height="734" alt="Category breakdown TreeChart" src="https://github.com/user-attachments/assets/e92969b4-51b9-4c12-8fac-42a1ee8b167d" />
+* **Top 10 Brands by Unit Volume (Chart):** Ranks the top 10 brands based strictly on the total quantity of units sold, identifying volume-driven suppliers.
+<img width="645" height="466" alt="Top 10 brands by unit Columnchart" src="https://github.com/user-attachments/assets/611b2ccd-9760-432e-a490-5af2cb56f80e" />
+
+#### Interactivity
+Controlled by the Month and Category slicers to allow drill-downs into specific timeframes and product groups.
 
 -------------------
 
+### Hub 4: Temporal Analytics
+
+This section tracks time-based patterns, sales density, and seasonal trends across different periods using time-intelligence metrics.
+
+#### Core KPI Cards
+* **Peak Hour Daily (10:00):** The specific hour that records the highest volume of transactions and user activity.
+* **Busiest Month (Sep):** The month with the highest operational transaction density.
+* **Busiest Day (7):** The day index representing the peak transaction volume of the week.
+
+![Temporal Analytics KPIs](Resources/Temporal%20Analytics%20cards.png)
+
+#### Visualizations
+* **Peak Hours / Days Heat Map - Revenue Density:** A 24x7 matrix cross-referencing hours of the day against days of the week. The highest revenue density (green cells) is strictly concentrated between 08:00 and 13:00, peaking heavily at 10:00 and 11:00, particularly on Fridays and Saturdays. The lowest density (red cells) occurs late at night between 20:00 and 04:00.
+  ![Peak Hours Heat Map](Resources/HeatMap.png)
+* **Sales by Day of Week (Column Chart):** Compares total revenue across the week. Thursday leads with the highest revenue (~$51.6M), followed closely by Friday (~$51.3M), while Wednesday represents the lowest point in weekly sales (~$44.1M).![Sales by Day of Week](Resources/Sales%20by%20week.png)
+* **Monthly Revenue & Growth Trends (Combo Chart):** Tracks revenue performance across months alongside Month-over-Month (MoM) growth velocity. August records the highest total revenue (~$53M), while May shows the sharpest spike in growth rate acceleration.![Monthly Revenue Combo Chart](Resources/Combo%20chart.png)
+
+----------------------------------
+
+## Conclusion & Future Growth
+
+This repository marks the second milestone in my data analysis learning journey. I acknowledge that the pipeline, model, or visuals may still contain mistakes or areas that require deeper optimization. 
+
+I treat these gaps as essential learning experiences rather than flaws. As my technical skills develop and my engineering mindset matures, I look forward to revisiting this project to refine the logic and apply more advanced data warehouse practices.

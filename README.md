@@ -8,16 +8,7 @@ The raw dataset (`RawData.csv`) is around 300MB and couldn't be uploaded to GitH
 2. Place it inside the `Resources > Data` folder.
 3. Keep the file named exactly: `RawData.csv`
 
-### 🔄 How to Connect the Data and Refresh
-
-Once the file is in place:
-
-1. Open `E-Commerce Behavioral & Sales Performance Dashboard.xlsx`
-2. Go to **Data** → **Queries & Connections**
-3. Double-click the **Data** query to open Power Query Editor
-4. Go to **Home** → **Data Source Settings** → **Change Source**
-5. Select the folder where you saved the dataset
-6. Click **OK** then **Close & Apply**
+💡 Note: This project is built with an automated Dynamic Relative Path. Once the data is in the correct folder, the system will seamlessly detect the file location on your machine and update the dashboard—no manual code edits required.
 
 ---
 

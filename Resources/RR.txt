@@ -357,3 +357,28 @@ VAR PriorMonthRevenue = CALCULATE([Total Revenue], DATEADD('Dim_Date'[Date], -1,
 RETURN
 DIVIDE(CurrentRevenue - PriorMonthRevenue, PriorMonthRevenue)
 التجسيد البصري: تم رسم الإيرادات كأعمدة باهتة (لأنها داتا خلفية)، بينما تم تعيين ميجر الـ MoM_Growth_Pct كـ خط متوهج بالأصفر النيون على محور ثانوي مستقل (Secondary Axis)، ليكون هو البطل البصري للشارت ويقيس سرعة تسارع وتوسع البزنس.
+
+
+
+## 🏗️ معمارية ملف العمل وحوكمة البيانات (Workbook Architecture)
+
+لضمان استدامة المشروع وقابلية صيانته من قِبل أي محلل بيانات آخر، تم تصميم الهيكل الداخلي لملف Excel وفقًا لأعلى المعايير المهنية للحوكمة ونظافة البيانات (Clean Back-end Design):
+
+### 1. نظام التسمية المعياري (Naming Conventions)
+* **الجداول المساعدة (Pivot Tables):** تم التخلي تماماً عن التسميات التلقائية (مثل `PivotTable1`). جرى تسمية كل جدول مساعد بناءً على الوظيفة الدقيقة والصفحة المرتبطة به (مثال: `PT_Overview_TopProducts` أو `PT_Temporal_HourlyDemand`).
+* **النطاقات المحددة (Named Ranges):** بدلاً من الاعتماد على مرجعيات الخلايا الجامدة والمبهمة (مثل `$A$1:$B$50`) والتي تسبب أخطاء عند التحديث، تم تحويل كافة الطبقات الوسيطة ونقاط الارتباط التلقائي (Paste Links) إلى **Named Ranges** ديناميكية واضحة لسهولة التتبع والقراءة.
+
+### 2. التنظيم الهيكلي للشيتات (Tab Hierarchy & Layout)
+* تم فصل واجهة المستخدم (Front-end Dashboards) تماماً عن طبقة الحسابات الخلفية (Back-end Calculations).
+* تم استخدام كود لوني صارم (Tab Color Coding)؛ حيث تم تلوين الشيتات المساعدة بالرمادي الداكن لعزل منطقة العمليات ومنع التعديل العشوائي، مع توثيق وعنونة رأسية داخل كل شيت تشرح وظيفة كل Pivot والمؤشر التابع له.
+
+
+
+
+
+
+
+## ⚡ Performance Analytics & Optimization Benchmarks
+Despite the high cardinality of the dataset and strict local hardware constraints, the data model has been heavily optimized to achieve industry-standard processing speeds:
+* **Slicer Response Time (Latency):** Best-case scenario **1.0s** | Worst-case scenario **3.0s** during cross-page dynamic filtering on 2.6M+ records.
+* **Optimization Strategy:** Bypassed nested conditional logic, strictly avoided system-generated calculated columns in the fact table, and enforced an optimized Logarithmic scale to maintain a low RAM footprint and fluid UI execution.

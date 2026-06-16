@@ -8,7 +8,16 @@ The raw dataset (`RawData.csv`) is around 300MB and couldn't be uploaded to GitH
 2. Place it inside the `Resources > Data` folder.
 3. Keep the file named exactly: `RawData.csv`
 
-💡 Note: This project is built with an automated Dynamic Relative Path. Once the data is in the correct folder, the system will seamlessly detect the file location on your machine and update the dashboard—no manual code edits required.
+### 🔄 How to Connect the Data and Refresh
+
+Once the file is in place:
+
+1. Open `E-Commerce Behavioral & Sales Performance Dashboard.xlsx`
+2. Go to **Data** → **Queries & Connections**
+3. Double-click the **Data** query to open Power Query Editor
+4. Go to **Home** → **Data Source Settings** → **Change Source**
+5. Select the folder where you saved the dataset
+6. Click **OK** then **Close & Apply**
 
 ---
 
@@ -116,8 +125,9 @@ Connected in Power Pivot using 1-to-Many relationships:
 
 Storing text in `Dim_Products` lets Excel's VertiPaq engine use dictionary encoding, which cuts RAM usage significantly. It also means if a brand name needs to change, you update one row and it reflects across all 2.6M records automatically.
 
-<img width="902" height="625" alt="Data Model - Star Schema" src="https://github.com/user-attachments/assets/21e4d5c7-a370-4dfd-bb0b-c1f3b30e47f7" />
-
+<p align="center">
+  <img src="Resources/PowerPivot relations diagram.png" alt="PowerPivot relations diagram" width="100%">
+</p>
 ---
 
 ## Step 3: Dashboard Structure & Analytical Hubs
@@ -130,11 +140,14 @@ I split the dashboard into 4 pages instead of cramming everything onto one scree
 
 The main revenue and sales page. Built for management-level decisions around overall performance, top suppliers, and seasonal trends.
 
-<img width="1907" height="897" alt="Financial Overview" src="https://github.com/user-attachments/assets/e6f7a3f0-1422-4464-a433-c24b1185e05c" />
+
+<img width="1889" height="911" alt="Financial overview" src="https://github.com/user-attachments/assets/130ee7ad-a5f0-4e63-83ad-fae9f7e8bc8b" />
+
 
 **KPI Cards:**
 
-<img width="318" height="661" alt="Financial Overview Cards" src="https://github.com/user-attachments/assets/b11b56da-f718-4a67-9e2a-61136f065d0c" />
+<img width="439" height="926" alt="Financial overview cards" src="https://github.com/user-attachments/assets/ec9e4aed-c7cb-40b4-b27f-0b7561b06f63" />
+
 
 | Metric | Value |
 |--------|-------|
@@ -162,7 +175,8 @@ The main revenue and sales page. Built for management-level decisions around ove
 
 Tracks user habits and platform friction. The 73.5% guest checkout rate is the most interesting number on this page — it points to a friction problem in the registration flow.
 
-<img width="1907" height="897" alt="Customer Behavior" src="https://github.com/user-attachments/assets/66a15502-1825-4b14-bb97-6a0be8ac0554" />
+<img width="1859" height="887" alt="customer behavior" src="https://github.com/user-attachments/assets/e580a158-3bec-411c-bb9e-29134299ca72" />
+
 
 **KPI Cards:**
 
@@ -188,7 +202,7 @@ Tracks user habits and platform friction. The 73.5% guest checkout rate is the m
 
 Focuses on inventory distribution, price ranges, and which products actually move volume.
 
-<img width="1907" height="897" alt="Product Intelligence" src="https://github.com/user-attachments/assets/8583a33c-80a3-4007-81a7-22d7cc627a20" />
+<img width="1873" height="891" alt="Product intelligence" src="https://github.com/user-attachments/assets/90b6ca6a-5ca2-4fb2-b5c8-8dd5666d48ca" />
 
 **KPI Cards:**
 
@@ -216,6 +230,9 @@ Focuses on inventory distribution, price ranges, and which products actually mov
 ### Hub 4: Temporal Analytics
 
 Time-based patterns: when do people buy, which hours are busiest, and how revenue shifts across the week and year.
+
+<img width="1868" height="894" alt="temporal analysis" src="https://github.com/user-attachments/assets/2a5b6bad-4e00-466f-ad13-ab1807b0ad85" />
+
 
 **KPI Cards:**
 <img width="898" height="139" alt="Temporal Analytics cards" src="https://github.com/user-attachments/assets/5eef5e5b-78c3-4765-8bed-0a8d9f68a055" />

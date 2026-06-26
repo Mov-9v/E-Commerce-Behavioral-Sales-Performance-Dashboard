@@ -8,7 +8,7 @@ The raw dataset (`RawData.csv`) is around 300MB and couldn't be uploaded to GitH
 2. Place it inside the `Resources > Data` folder.
 3. Keep the file named exactly: `RawData.csv`
 
-### 🔄 How to Connect the Data and Refresh
+###  How to Connect the Data and Refresh
 
 Once the file is in place:
 
